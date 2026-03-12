@@ -1,14 +1,24 @@
 -- SALE!SALE!SALE!
+-- Vhea's Solution
 
 -- You must not change the next 2 lines or the table definition.
 SET SEARCH_PATH TO Recommender;
 
+-- List of all items that have been purchased at least 10 times 
+DROP VIEW IF EXISTS ManyPurchased CASCADE;
 
--- You may find it convenient to do this for each of the views
--- that define your intermediate steps. (But give them better names!)
-DROP VIEW IF EXISTS IntermediateStep CASCADE;
+CREATE VIEW ManyPurchased AS 
+    SELECT LI.IID AS item, SUM(quantity) AS amount_bought
+    FROM lineitem LI 
+    GROUP BY LI.IID
+    HAVING SUM(quantity) >= 10;
 
--- Define views for your intermediate steps here:
-CREATE VIEW IntermediateStep AS ... ;
-
-
+-- Update all items that have been purchased at least 10 times with the discounts
+UPDATE item
+SET price = CASE
+    WHEN price >= 10 AND price <= 50 THEN price * 0.8 -- 20% discount
+    WHEN price > 50 AND price <= 100 THEN price * 0.7 -- 30% discount
+    WHEN price >100 THEN price * 0.5 -- 50% discount
+    ELSE price
+END
+WHERE iid IN (SELECT item FROM ManyPurchased);
