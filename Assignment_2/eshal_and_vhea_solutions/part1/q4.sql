@@ -25,13 +25,7 @@ DROP VIEW IF EXISTS LowestCategories CASCADE;
 -- Step 1: List all months in year as strings like '01', '02', ... '12'
 -- As we need to list all the months in a year in the answer
 CREATE VIEW Months AS
-SELECT *
-FROM 
-    (VALUES
-        ('01'), ('02'), ('03'), ('04'),
-        ('05'), ('06'), ('07'), ('08'),
-        ('09'), ('10'), ('11'), ('12')
-    ) AS m(month); -- Create column month in the relation m
+SELECT to_char(generate_series(1, 12), 'FM09') AS month;
 
 -- Step 2: We need every category in the database, even if it had no sales
 CREATE VIEW Categories AS
