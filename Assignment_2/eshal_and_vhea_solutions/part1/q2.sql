@@ -46,7 +46,8 @@ SELECT
 
     CASE
         -- If a customer has no reviews then score = 0
-        WHEN rc.total_reviews = 0 THEN 'not helpful'
+        WHEN rc.total_reviews = 0 
+            THEN 'not helpful'
 
         -- Otherwise, score = helpful_reviews / total_reviews
         
