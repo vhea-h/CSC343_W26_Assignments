@@ -19,12 +19,12 @@ DROP VIEW IF EXISTS ReviewCounts CASCADE;
 -- Step 1: Find reviews that are considered "helpful"
 -- A review is helpful if TRUE votes > FALSE votes
 CREATE VIEW HelpfulReviews AS
-SELECT reviewer AS cid, iid
-FROM Helpfulness
-GROUP BY reviewer, iid
-HAVING
-    SUM(CASE WHEN helpfulness = TRUE THEN 1 ELSE 0 END) >
-    SUM(CASE WHEN helpfulness = FALSE THEN 1 ELSE 0 END);
+    SELECT reviewer AS cid, iid
+    FROM Helpfulness
+    GROUP BY reviewer, iid
+    HAVING
+        SUM(CASE WHEN helpfulness = TRUE THEN 1 ELSE 0 END) >
+        SUM(CASE WHEN helpfulness = FALSE THEN 1 ELSE 0 END);
 
 
 -- Step 2: Count total reviews and helpful reviews for each customer
