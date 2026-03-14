@@ -19,21 +19,21 @@ DROP VIEW IF EXISTS ReviewCounts CASCADE;
 -- Step 1: Find reviews that are considered "helpful"
 -- A review is helpful if TRUE votes > FALSE votes
 CREATE VIEW HelpfulReviews AS
-SELECT reviewer AS cid, iid
-FROM Helpfulness
-GROUP BY reviewer, iid
-HAVING
-    SUM(CASE WHEN helpfulness = TRUE THEN 1 ELSE 0 END) >
-    SUM(CASE WHEN helpfulness = FALSE THEN 1 ELSE 0 END);
+    SELECT reviewer AS cid, iid
+    FROM Helpfulness
+    GROUP BY reviewer, iid
+    HAVING
+        SUM(CASE WHEN helpfulness = TRUE THEN 1 ELSE 0 END) >
+        SUM(CASE WHEN helpfulness = FALSE THEN 1 ELSE 0 END);
 
 
 -- Step 2: Count total reviews and helpful reviews for each customer
 CREATE VIEW ReviewCounts AS
-SELECT c.cid, COUNT(r.iid) AS total_reviews, COUNT(hr.iid) AS helpful_reviews
-FROM Customer c
-                LEFT JOIN Review r ON c.cid = r.cid
-                LEFT JOIN HelpfulReviews hr ON r.cid = hr.cid AND r.iid = hr.iid
-GROUP BY c.cid;
+    SELECT c.cid, COUNT(r.iid) AS total_reviews, COUNT(hr.iid) AS helpful_reviews
+    FROM Customer c
+        LEFT JOIN Review r ON c.cid = r.cid
+        LEFT JOIN HelpfulReviews hr ON r.cid = hr.cid AND r.iid = hr.iid
+    GROUP BY c.cid;
 
 
 -- Answer: Your query that answers the question goes below the "insert into" line:
@@ -51,10 +51,10 @@ SELECT
 
         -- Otherwise, score = helpful_reviews / total_reviews
         
-        WHEN (rc.helpful_reviews::FLOAT / rc.total_reviews) >= 0.8
+        WHEN (rc.helpful_reviews / rc.total_reviews) >= 0.8
             THEN 'very helpful'
 
-        WHEN (rc.helpful_reviews::FLOAT / rc.total_reviews) >= 0.5
+        WHEN (rc.helpful_reviews / rc.total_reviews) >= 0.5
             THEN 'somewhat helpful'
 
         ELSE 'not helpful'
