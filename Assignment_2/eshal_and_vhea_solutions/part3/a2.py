@@ -81,7 +81,7 @@ class Recommender:
             return True
         except pg.Error:
             return False
-
+    
     def repopulate(self) -> bool:
         """Repopulate the database tables that store a snapshot of information
         derived from the base tables. To simplify your task, assume that table
@@ -114,8 +114,74 @@ class Recommender:
         """
         # TODO - complete this method
 
+        curr = self.connection.cursor()
+
         try:
-            pass
+            # Delete all data from both tables 
+            curr.execute("DELETE FROM PopularItem;")
+            curr.execute("DELETE FROM EliteRating;")
+
+            # Repopulate PopularItems Table 
+            curr.execute("SELECT DISTINCT category FROM Item;")
+            categories = curr.fetchall()
+
+            print("HELLO WE ARE RIGHT BEFORE CREATING THE VIEW")
+
+            # Obtain new table with item total units sold
+            # Columns: IID, category, total_quantity 
+            curr.execute(
+                "CREATE TEMPORARY VIEW items_count AS " + 
+                "SELECT IID, category, sum(quantity) AS total_quantity " +
+                "FROM Item NATURAL JOIN Lineitem " +
+                "GROUP BY IID, category;")
+            
+            curr.execute("SELECT * FROM items_count")
+            item_count = curr.fetchall()
+            print(item_count)
+
+            print ("RAAAHHHH")
+
+            for c in categories:
+                cat = c[0]
+
+                # Create temporary view that picks ranks the items of the current category based on auntity sold
+                curr.execute("DROP VIEW IF EXISTS CurrentCategoryItems CASCADE;")
+                curr.execute("CREATE TEMPORARY VIEW CurrentCategoryItems AS "
+                             "SELECT IID, category, total_quantity " +
+                                "DENSE_RANK() OVER (PARTITION BY category ORDER BY total_quantity DESC) AS rank"
+                             "FROM items_count " + 
+                             "WHERE category = %s " + 
+                             "ORDER BY total_quantity DESC; " 
+                             , [cat]
+                             )
+                print("Current Items! ")
+
+                # Get top 2 items of each category with ties 
+                curr.execute("DROP VIEW IF EXISTS Top2Items CASCADE;")
+                curr.execute(
+                "CREATE TEMPORARY VIEW Top2Items AS " + 
+                "SELECT * " +
+                "FROM CurrentCategoryItems " +
+                "WHERE rank <= 2;")
+
+                print(curr.fetchall())
+                
+                # Insert found items and ratings into PopularItem
+                curr.execute(
+                            "INSERT INTO PopularItem " + 
+                             "SELECT Review.IID AS IID, avg(rating) AS avg_rating " +
+                             "FROM Top2Items NATURAL JOIN Review " +
+                             "GROUP BY Review.IID;")
+                print("Popular Items and Stuff")
+                print(curr.fetchall())
+                
+
+            # Find all categories 
+            print("We left the forloop")
+            curr.execute("SELECT * FROM PopularItem;")
+            print(curr.fetchall())
+            return True
+
         except pg.Error as ex:
             # You may find it helpful to uncomment this line while debugging,
             # as it will show you all the details of the error that occurred:
