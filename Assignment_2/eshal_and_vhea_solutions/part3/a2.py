@@ -81,7 +81,7 @@ class Recommender:
             return True
         except pg.Error:
             return False
-    
+
     def repopulate(self) -> bool:
         """Repopulate the database tables that store a snapshot of information
         derived from the base tables. To simplify your task, assume that table
@@ -114,72 +114,64 @@ class Recommender:
         """
         # TODO - complete this method
 
-        curr = self.connection.cursor()
-
         try:
-            # Delete all data from both tables 
-            curr.execute("DELETE FROM PopularItem;")
+            curr = self.connection.cursor()
+
             curr.execute("DELETE FROM EliteRating;")
+            curr.execute("DELETE FROM PopularItem;")
 
-            # Repopulate PopularItems Table 
-            curr.execute("SELECT DISTINCT category FROM Item;")
-            categories = curr.fetchall()
+            # Step 1: Total units sold for each item
+            curr.execute("DROP VIEW IF EXISTS ItemSales CASCADE;")
+            curr.execute("""
+                CREATE TEMPORARY VIEW ItemSales AS
+                    SELECT i.iid, i.category, SUM(li.quantity) AS total_quantity
+                    FROM Item i
+                    JOIN LineItem li ON i.iid = li.iid
+                    GROUP BY i.iid, i.category;
+            """)
 
-            print("HELLO WE ARE RIGHT BEFORE CREATING THE VIEW")
+            # Step 2: Rank items inside each category by total_quantity.
+            # We want highest and second highest
+            # Also including ties
+            curr.execute("DROP VIEW IF EXISTS RankedSales CASCADE;")
+            curr.execute("""
+                CREATE TEMPORARY VIEW RankedSales AS
+                    SELECT iid,
+                        category,
+                        total_quantity,
+                        DENSE_RANK() OVER (PARTITION BY category ORDER BY total_quantity DESC) AS rank
+                    FROM ItemSales;
+            """)
 
-            # Obtain new table with item total units sold
-            # Columns: IID, category, total_quantity 
-            curr.execute(
-                "CREATE TEMPORARY VIEW items_count AS " + 
-                "SELECT IID, category, sum(quantity) AS total_quantity " +
-                "FROM Item NATURAL JOIN Lineitem " +
-                "GROUP BY IID, category;")
-            
-            curr.execute("SELECT * FROM items_count")
-            item_count = curr.fetchall()
-            print(item_count)
+            # Step 3: Keep only rank 1 and rank 2 items in each category
+            curr.execute("DROP VIEW IF EXISTS TopPopularItems CASCADE;")
+            curr.execute("""
+                CREATE TEMPORARY VIEW TopPopularItems AS
+                    SELECT iid
+                    FROM RankedSales
+                    WHERE rank <= 2;
+            """)
 
-            print ("RAAAHHHH")
+            # Now populate PopularItem
+            curr.execute("""
+                INSERT INTO PopularItem (iid, avg_rating)
+                SELECT tpi.iid, AVG(r.rating) AS avg_rating
+                FROM TopPopularItems tpi
+                LEFT JOIN Review r ON tpi.iid = r.iid
+                GROUP BY tpi.iid;
+            """)
 
-            for c in categories:
-                cat = c[0]
+            # Now populate EliteRating
+            curr.execute("""
+                INSERT INTO EliteRating (cid, iid, rating)
+                SELECT r.cid, r.iid, r.rating
+                FROM Review r
+                    JOIN EliteMember em ON r.cid = em.cid
+                    JOIN PopularItem pi ON r.iid = pi.iid;
+            """)
 
-                # Create temporary view that picks ranks the items of the current category based on auntity sold
-                curr.execute("DROP VIEW IF EXISTS CurrentCategoryItems CASCADE;")
-                curr.execute("CREATE TEMPORARY VIEW CurrentCategoryItems AS "
-                             "SELECT IID, category, total_quantity " +
-                                "DENSE_RANK() OVER (PARTITION BY category ORDER BY total_quantity DESC) AS rank"
-                             "FROM items_count " + 
-                             "WHERE category = %s " + 
-                             "ORDER BY total_quantity DESC; " 
-                             , [cat]
-                             )
-                print("Current Items! ")
-
-                # Get top 2 items of each category with ties 
-                curr.execute("DROP VIEW IF EXISTS Top2Items CASCADE;")
-                curr.execute(
-                "CREATE TEMPORARY VIEW Top2Items AS " + 
-                "SELECT * " +
-                "FROM CurrentCategoryItems " +
-                "WHERE rank <= 2;")
-
-                print(curr.fetchall())
-                
-                # Insert found items and ratings into PopularItem
-                curr.execute(
-                            "INSERT INTO PopularItem " + 
-                             "SELECT Review.IID AS IID, avg(rating) AS avg_rating " +
-                             "FROM Top2Items NATURAL JOIN Review " +
-                             "GROUP BY Review.IID;")
-                print("Popular Items and Stuff")
-                print(curr.fetchall())
-                
-
-            # Find all categories 
-            print("We left the forloop")
-            curr.execute("SELECT * FROM PopularItem;")
-            print(curr.fetchall())
+            self.connection.commit()
+            curr.close()
             return True
 
         except pg.Error as ex:
@@ -223,68 +215,68 @@ class Recommender:
             # raise ex
             return None
 
-    def recommend(self, cust: int, k: int) -> Optional[list[int]]:
-        """Return the item IDs of the <k> recommended items for customer <cust>
-        based on the algorithm outlined below.
+    # def recommend(self, cust: int, k: int) -> Optional[list[int]]:
+    #     """Return the item IDs of the <k> recommended items for customer <cust>
+    #     based on the algorithm outlined below.
 
-        Choose the recommendations as follows:
-        1. Find <cust>'s "elite analogous rater". To do that, you will need to
-           calculate the "average rating difference" between <cust> and every
-           elite member in the EliteMember table:
+    #     Choose the recommendations as follows:
+    #     1. Find <cust>'s "elite analogous rater". To do that, you will need to
+    #        calculate the "average rating difference" between <cust> and every
+    #        elite member in the EliteMember table:
 
-           a. For each item in the PopularItem table that was rated by both
-              <cust> and the elite member, find the absolute difference between
-              <cust>'s rating and the elite member's rating of the item, as
-              indicated in the EliteRating table.
-           b. The "average rating difference" between <cust> and an elite member
-              is the average of these ratings differences.
-              Consequently, if an elite member and <cust> have no ratings
-              in common, their "average rating difference" is NULL.
+    #        a. For each item in the PopularItem table that was rated by both
+    #           <cust> and the elite member, find the absolute difference between
+    #           <cust>'s rating and the elite member's rating of the item, as
+    #           indicated in the EliteRating table.
+    #        b. The "average rating difference" between <cust> and an elite member
+    #           is the average of these ratings differences.
+    #           Consequently, if an elite member and <cust> have no ratings
+    #           in common, their "average rating difference" is NULL.
 
-           <cust>'s "elite analogous rater" is the elite member with the
-           lowest non-NULL "average rating difference".
-           In the case of ties, select the elite member with the lower CID.
+    #        <cust>'s "elite analogous rater" is the elite member with the
+    #        lowest non-NULL "average rating difference".
+    #        In the case of ties, select the elite member with the lower CID.
 
-        2. Out of ALL the items (not just popular items) that the
-           "elite analogous rater" has ever rated but <cust> has never bought,
-           recommend the top <k> products that this "elite analogous rater"
-           has rated highest.
-           If there are not enough products rated by this
-           "elite analogous rater", there may be fewer than <k> items in the
-           returned list.
-           If there are ties among their top-rated items, there may be more
-           than <k> items that could be returned.
-           In that case, order these items by item ID (lowest to highest) and
-           take the lowest <k>.
-           The net effect is that the number of items returned will be <= <k>.
+    #     2. Out of ALL the items (not just popular items) that the
+    #        "elite analogous rater" has ever rated but <cust> has never bought,
+    #        recommend the top <k> products that this "elite analogous rater"
+    #        has rated highest.
+    #        If there are not enough products rated by this
+    #        "elite analogous rater", there may be fewer than <k> items in the
+    #        returned list.
+    #        If there are ties among their top-rated items, there may be more
+    #        than <k> items that could be returned.
+    #        In that case, order these items by item ID (lowest to highest) and
+    #        take the lowest <k>.
+    #        The net effect is that the number of items returned will be <= <k>.
 
-        If <cust> does not have an "elite analogous rater", or if <cust> has
-        already bought all the items that are rated by their
-        "elite analogous rater", then return generic recommendations.
+    #     If <cust> does not have an "elite analogous rater", or if <cust> has
+    #     already bought all the items that are rated by their
+    #     "elite analogous rater", then return generic recommendations.
 
-        Note: An average rating of NULL is considered lower than an average
-        rating of 0.
+    #     Note: An average rating of NULL is considered lower than an average
+    #     rating of 0.
 
-        Return None if an error occurs i.e., do NOT throw an error.
+    #     Return None if an error occurs i.e., do NOT throw an error.
 
-        Preconditions:
-            - <k> > 0
-            - <cust> is a CID that exists in the database and is not in the
-              EliteMember table.
-            - Recommender.repopulate has been called at least once.
-              That means that you should NOT call repopulate in this method.
-              It also means that you can get full credit for this method even if
-              you didn't implement Recommender.repopulate.
-        """
-        # TODO - complete this method
+    #     Preconditions:
+    #         - <k> > 0
+    #         - <cust> is a CID that exists in the database and is not in the
+    #           EliteMember table.
+    #         - Recommender.repopulate has been called at least once.
+    #           That means that you should NOT call repopulate in this method.
+    #           It also means that you can get full credit for this method even if
+    #           you didn't implement Recommender.repopulate.
+    #     """
+    #     # TODO - complete this method
 
-        try:
-            pass
-        except pg.Error as ex:
-            # You may find it helpful to uncomment this line while debugging,
-            # as it will show you all the details of the error that occurred:
-            # raise ex
-            return None
+    #     try:
+    #         pass
+    #     except pg.Error as ex:
+    #         # You may find it helpful to uncomment this line while debugging,
+    #         # as it will show you all the details of the error that occurred:
+    #         # raise ex
+    #         return None
 
 
 if __name__ == "__main__":
