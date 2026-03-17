@@ -130,6 +130,10 @@ class Recommender:
                     GROUP BY i.iid, i.category;
             """)
 
+            curr.execute("SELECT * FROM ItemSales;")
+            print("ItemSales Stuff: IID, Category, Total Quantity")
+            print(curr.fetchall())
+
             # Step 2: Rank items inside each category by total_quantity.
             # We want highest and second highest
             # Also including ties
@@ -143,6 +147,10 @@ class Recommender:
                     FROM ItemSales;
             """)
 
+            curr.execute("SELECT * FROM RankedSales;")
+            print("RankedSales Stuff: IID, Category, Total Quantity, Rank")
+            print(curr.fetchall())
+
             # Step 3: Keep only rank 1 and rank 2 items in each category
             curr.execute("DROP VIEW IF EXISTS TopPopularItems CASCADE;")
             curr.execute("""
@@ -152,6 +160,10 @@ class Recommender:
                     WHERE rank <= 2;
             """)
 
+            curr.execute("SELECT * FROM TopPopularItems;")
+            print("TopPopularItems Stuff: IID")
+            print(curr.fetchall())
+
             # Now populate PopularItem
             curr.execute("""
                 INSERT INTO PopularItem (iid, avg_rating)
@@ -160,6 +172,10 @@ class Recommender:
                 LEFT JOIN Review r ON tpi.iid = r.iid
                 GROUP BY tpi.iid;
             """)
+            
+            curr.execute("SELECT * FROM PopularItem;")
+            print("PopularItem Stuff: IID, Average Rating")
+            print(curr.fetchall())
 
             # Now populate EliteRating
             curr.execute("""
@@ -208,14 +224,108 @@ class Recommender:
         # TODO - complete this method
 
         try:
-            pass
+            curr = self.connection.cursor()
+
+            k_lim = str(k)
+
+            # Step 1: Sort and order everything, picking the top k 
+            curr.execute("DROP VIEW IF EXISTS TopKItems CASCADE;")
+            curr.execute("""
+                CREATE TEMPORARY VIEW TopKItems AS
+                    SELECT PI.IID
+                    FROM PopularItem PI
+                    ORDER BY PI.avg_rating DESC, PI.IID
+                    LIMIT %s;
+            """, [k_lim])
+
+            curr.execute("SELECT * FROM TopKItems;")
+
+            items = curr.fetchall()
+            results = []
+
+            for item in items:
+                results.append(item[0])
+            
+            # Return the values 
+            curr.close()
+
+            return results
+
+
         except pg.Error as ex:
             # You may find it helpful to uncomment this line while debugging,
             # as it will show you all the details of the error that occurred:
             # raise ex
             return None
 
-    # def recommend(self, cust: int, k: int) -> Optional[list[int]]:
+    # Given some customer with cust_cid, return the CID of their corresponding elite analogous rater  
+    def find_elite_analogous_rater(self, cust_cid, curr):
+
+        # Checks if EliteRating is empty 
+        curr.execute("SELECT EXISTS (SELECT * FROM EliteRating) AS has_data")
+        if not curr.fetchall()[0][0]:
+            return "NO MATCH"
+            
+        # Step 1: Get rating of all popular items provided by our customer 
+        curr.execute("DROP VIEW IF EXISTS ReviewedByCust CASCADE;")
+        curr.execute("""
+            CREATE TEMPORARY VIEW ReviewedByCust AS
+                SELECT Review.CID, PI.IID, Review.rating
+                FROM PopularItem PI JOIN Review ON PI.IID = Review.IID 
+                WHERE CID = %s;
+        """, [cust_cid])
+
+        curr.execute("SELECT * FROM ReviewedByCust;")
+        print("ReviewedByCust Stuff: CID, IID, Rating")
+        print(curr.fetchall())
+
+        # Step 2: Get the difference in rating of all popular items between
+        # our customer and the elite raters 
+        curr.execute("DROP VIEW IF EXISTS EliteDifferences CASCADE;")
+        curr.execute("""
+            CREATE TEMPORARY VIEW EliteDifferences AS
+                SELECT ER.CID AS elite_cid, ABS(RBC.rating - ER.rating) AS diff
+                FROM ReviewedByCust RBC RIGHT JOIN EliteRating ER ON RBC.IID = ER.IID
+                WHERE ER.CID <> RBC.CID;
+        """)
+        
+        curr.execute("SELECT * FROM EliteDifferences;")
+        print("EliteDifferences Stuff: Elite CID, Diff")
+        print(curr.fetchall())
+
+        # Step 3: Get the average difference in rating of all popular items between
+        # our customer and the elite raters 
+        curr.execute("DROP VIEW IF EXISTS AvgEliteDifferences CASCADE;")
+        curr.execute("""
+            CREATE TEMPORARY VIEW AvgEliteDifferences AS
+                SELECT ER.CID AS elite_cid, avg(diff) AS avg_diff
+                FROM EliteDifferences
+                GROUP BY ER.CID;
+        """)
+
+        # Step 4: The average difference view without Null avgs 
+        curr.execute("DROP VIEW IF EXISTS EliteAnalogousRater CASCADE;")
+        curr.execute("""
+            CREATE TEMPORARY VIEW EliteAnalogousRater AS
+                SELECT elite_cid
+                FROM AvgEliteDifferences
+                WHERE avg_diff IS NOT NULL 
+                ORDER BY avg_diff ASC, elite_cid ASC
+                LIMIT 1;
+        """)
+
+        # Check if EliteAnalogousRater is empty. Return NO MATCH if it is
+        curr.execute("SELECT EXISTS (SELECT * FROM EliteAnalogousRater) AS has_data")
+        if not curr.fetchall()[0][0]:
+            return "NO MATCH"
+        
+        # If the table is not empty, we have our answer 
+        else:
+            curr.execute("SELECT * FROM EliteAnalogousRaters;")
+            EliteAnalogousRater = curr.fetchall()[0][0] # [(elite1,)]
+            return EliteAnalogousRater 
+    
+    def recommend(self, cust: int, k: int) -> Optional[list[int]]:
     #     """Return the item IDs of the <k> recommended items for customer <cust>
     #     based on the algorithm outlined below.
 
@@ -270,13 +380,65 @@ class Recommender:
     #     """
     #     # TODO - complete this method
 
-    #     try:
-    #         pass
-    #     except pg.Error as ex:
-    #         # You may find it helpful to uncomment this line while debugging,
-    #         # as it will show you all the details of the error that occurred:
-    #         # raise ex
-    #         return None
+        try:
+            curr = self.connection.cursor()
+
+            # PART 1
+            elite_CID = self.find_elite_analogous_rater(cust, curr)
+
+            # If the customer has no elite match 
+            if elite_CID == "NO MATCH":
+                return self.recommend_generic(k)
+            
+            # PART 2
+
+            # Subtract everything cust bought from everything EAR reviewed to get potential recommendations 
+            curr.execute("DROP VIEW IF EXISTS PotentialRecs CASCADE;")
+            curr.execute("""
+                CREATE TEMPORARY VIEW PotentialRecs AS
+                    (SELECT IID
+                    FROM Review
+                    WHERE CID = %s)
+                    
+                    EXCEPT
+
+                    (SELECT LineItem.IID
+                    FROM LineItem NATURAL JOIN Purchase
+                    WHERE Purchase.CID = %s)     
+                                     
+            """, [elite_CID, cust])
+
+            curr.execute("SELECT EXISTS (SELECT * FROM PotentialRecs) AS has_data")
+            if not curr.fetchall()[0][0]:
+                return self.recommend_generic(k)
+
+            # Get what the EAR has rated each of these potential recommended items 
+            curr.execute("DROP VIEW IF EXISTS PotentialRecRatings CASCADE;")
+            curr.execute("""
+                CREATE TEMPORARY VIEW PotentialRecRatings AS
+                    SELECT IID
+                    FROM PotentialRecs NATURAL JOIN Review 
+                    WHERE CID = %s
+                    ORDER BY rating DESC, IID ASC
+                    LIMIT %s;
+            """, [elite_CID, k])
+
+            curr.execute("SELECT * FROM PotentialRecRatings") 
+
+            result = []
+            recommendations = curr.fetchall() #[(item1,), (item2,), (item3,)]
+
+            for rec in recommendations:
+                result.append(rec[0])
+
+            curr.close()
+            return result
+        
+        except pg.Error as ex:
+            # You may find it helpful to uncomment this line while debugging,
+            # as it will show you all the details of the error that occurred:
+            # raise ex
+            return None
 
 
 if __name__ == "__main__":
