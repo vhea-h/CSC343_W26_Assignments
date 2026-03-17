@@ -234,7 +234,7 @@ class Recommender:
                 CREATE TEMPORARY VIEW TopKItems AS
                     SELECT PI.IID
                     FROM PopularItem PI
-                    ORDER BY PI.avg_rating DESC, PI.IID
+                    ORDER BY PI.avg_rating DESC NULLS LAST, PI.IID
                     LIMIT %s;
             """, [k_lim])
 
@@ -298,9 +298,9 @@ class Recommender:
         curr.execute("DROP VIEW IF EXISTS AvgEliteDifferences CASCADE;")
         curr.execute("""
             CREATE TEMPORARY VIEW AvgEliteDifferences AS
-                SELECT ER.CID AS elite_cid, avg(diff) AS avg_diff
+                SELECT elite_cid, avg(diff) AS avg_diff
                 FROM EliteDifferences
-                GROUP BY ER.CID;
+                GROUP BY elite_cid;
         """)
 
         # Step 4: The average difference view without Null avgs 
@@ -309,8 +309,7 @@ class Recommender:
             CREATE TEMPORARY VIEW EliteAnalogousRater AS
                 SELECT elite_cid
                 FROM AvgEliteDifferences
-                WHERE avg_diff IS NOT NULL 
-                ORDER BY avg_diff ASC, elite_cid ASC
+                ORDER BY avg_diff ASC NULLS LAST, elite_cid ASC
                 LIMIT 1;
         """)
 
@@ -321,7 +320,7 @@ class Recommender:
         
         # If the table is not empty, we have our answer 
         else:
-            curr.execute("SELECT * FROM EliteAnalogousRaters;")
+            curr.execute("SELECT * FROM EliteAnalogousRater;")
             EliteAnalogousRater = curr.fetchall()[0][0] # [(elite1,)]
             return EliteAnalogousRater 
     
@@ -419,7 +418,7 @@ class Recommender:
                     SELECT IID
                     FROM PotentialRecs NATURAL JOIN Review 
                     WHERE CID = %s
-                    ORDER BY rating DESC, IID ASC
+                    ORDER BY rating DESC NULLS LAST, IID ASC
                     LIMIT %s;
             """, [elite_CID, k])
 
