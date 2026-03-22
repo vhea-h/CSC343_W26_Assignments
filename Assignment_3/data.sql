@@ -276,4 +276,10 @@ INSERT INTO ConcertSectionPrice VALUES
 INSERT INTO Ticket VALUES
 
     -- Taylor Swift Tickets - 51 Sold 
-    (5001, 'alex', 3001, 401, '2026-03-01 10:00:00');
+    (5001, 'joe', 301, 401, '2026-03-01 10:00:00'),
+    (5002, 'joe', 302, 401, '2026-03-01 10:00:00'),
+    (5003, 'joe', 303, 401, '2026-03-01 10:00:00'),
+    (5004, 'joe', 304, 401, '2026-03-01 10:00:00'),
+    (5005, 'joe', 305, 401, '2026-03-01 10:00:00');
+
+    -- TODO: ADD REST OF THE TICKETS 
