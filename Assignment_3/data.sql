@@ -1,201 +1,228 @@
 -- Populates the ticketschema tables with sample data
--- Values generated via Copilot UofT 
+-- Eshal and Vhea generated
 
--- ================================
 -- Owner
--- ================================
 INSERT INTO Owner VALUES
-(1, 'Metro Events Group', '416-111-0001'),
-(2, 'Skyline Venues Inc', '416-222-0002'),
-(3, 'Northern Lights Productions', '416-333-0003'),
-(4, 'Grand Hall Corp', '416-444-0004'),
-(5, 'CityStage Entertainment', '416-555-0005'),
-(6, 'OpenWave Arts', '416-666-0006');
+    (1, 'Ida Florence', '416-123-0001'),
+    (2, 'Qualcomm', '416-123-0003'),
+    (3, 'Alphawave', '416-123-0003'),
+    (4, 'AMD', '416-123-0004'),
+    (5, 'The Builder', '416-123-0005'),
+    (6, 'Duke Clarence', '416-123-0006');
 
--- ================================
--- Venue (≥10 venues, at least one owner with ≥3 venues)
--- Owner 1 owns 3 venues
--- ================================
+-- Venue
 INSERT INTO Venue VALUES
-(101, 'Metro Arena', 'Toronto', '11 King St', 1),
-(102, 'Harbour Pavilion', 'Toronto', '22 Lake Rd', 1),
-(103, 'Uptown Theatre', 'Toronto', '33 Main Blvd', 1),
-(104, 'Skyline Dome', 'Ottawa', '44 River St', 2),
-(105, 'Aurora Arts Center', 'Ottawa', '55 Forest Ln', 3),
-(106, 'Northern Stage', 'Montreal', '66 North Ave', 3),
-(107, 'Grand Hall', 'Montreal', '77 Center Rd', 4),
-(108, 'CityStage Arena', 'Calgary', '88 West St', 5),
-(109, 'OpenWave House', 'Vancouver', '99 East Rd', 6),
-(110, 'Pacific Theatre', 'Vancouver', '100 Ocean Dr', 6);
+    (101, 'Scotia Arena', 'Toronto', '40 Bay St.', 1),
+    (102, 'Adelaide Hall', 'Toronto', '250 Adelaide St W, Toronto', 2),
+    (103, 'Massey Hall', 'Toronto', '178 Victoria St', 2),
+    (104, 'Place des Arts', 'Montreal', '175 Rue Sainte-Catherine O', 2),
+    (105, 'MTELUS', 'Montreal', '59 Rue Sainte-Catherine E', 3),
+    (106, 'Théâtre Fairmount', 'Montreal', '5240 Av. du Parc, Montréal', 3),
+    (107, 'Bronson Centre', 'Ottawa', '211 Bronson Ave', 4),
+    (108, 'Maxwell’s Concerts and Events', 'Waterloo', '35 University Ave E', 6),
+    (109, 'Rogers Arena', 'Vancouver', '800 Griffiths Wy', 4),
+    (110, 'Orpheum', 'Vancouver', '601 Smithe St, Vancouver', 6);
 
--- ================================
--- Section (1–3 per venue)
--- ================================
+-- Section
 INSERT INTO Section VALUES
-(201, 'Floor', 101),
-(202, 'Balcony', 101),
 
-(203, 'Main', 102),
-(204, 'Upper', 102),
+    -- Scotia Arena Sections 
+    (201, 'Floor', 101),
+    (202, 'Balcony', 101),
+    (203, 'Top Box', 101),
 
-(205, 'Orchestra', 103),
+    -- Adelaide Hall
+    (204, 'Main', 102),
 
-(206, 'General', 104),
+    -- Place des Arts
+    (205, 'Balcony', 102),
 
-(207, 'Main', 105),
-(208, 'Balcony', 105),
+    -- MTELUS
+    (206, 'Balcony', 102),
 
-(209, 'General', 106),
+    -- Théâtre Fairmount
+    (207, 'Balcony', 102),
 
-(210, 'Main', 107),
+    -- Bronson Centre
+    (208, 'Balcony', 102),
 
-(211, 'Floor', 108),
-(212, 'Balcony', 108),
+    -- Maxwell’s Concerts and Events
+    (209, 'Balcony', 102),
 
-(213, 'Main', 109),
+    -- Rogers Arena
+    (210, 'Balcony', 102),
 
-(214, 'Stage', 110);
+    -- Orpheum
+    (211, 'Balcony', 102);
 
--- ================================
--- Seat (≥10 per venue, at least one ≥25% accessible)
--- To simplify: 10 seats per section
--- ================================
+-- Seat
+
 INSERT INTO Seat VALUES
--- Metro Arena Floor (3 accessible of 10: 30%)
-(3001, 'F1', 201, TRUE),
-(3002, 'F2', 201, TRUE),
-(3003, 'F3', 201, TRUE),
-(3004, 'F4', 201, FALSE),
-(3005, 'F5', 201, FALSE),
-(3006, 'F6', 201, FALSE),
-(3007, 'F7', 201, FALSE),
-(3008, 'F8', 201, FALSE),
-(3009, 'F9', 201, FALSE),
-(3010, 'F10', 201, FALSE),
 
--- Metro Arena Balcony
-(3011, 'B1', 202, FALSE),
-(3012, 'B2', 202, FALSE),
-(3013, 'B3', 202, FALSE),
-(3014, 'B4', 202, FALSE),
-(3015, 'B5', 202, FALSE),
-(3016, 'B6', 202, FALSE),
-(3017, 'B7', 202, FALSE),
-(3018, 'B8', 202, FALSE),
-(3019, 'B9', 202, FALSE),
-(3020, 'B10', 202, FALSE),
+    -- MTELUS Balcony Seats (10 Seats)
+    (3001, 'B1', 206, TRUE),
+    (3002, 'B2', 206, TRUE),
+    (3003, 'B3', 206, TRUE),
+    (3004, 'B4', 206, TRUE),
+    (3005, 'B5', 206, TRUE),
+    (3006, 'B6', 206, TRUE),
+    (3007, 'B7', 206, TRUE),
+    (3008, 'B8', 206, TRUE),
+    (3009, 'B9', 206, TRUE),
+    (3010, 'B10', 206, TRUE),
 
--- Harbour Pavilion Main
-(3021, 'M1', 203, FALSE),
-(3022, 'M2', 203, FALSE),
-(3023, 'M3', 203, FALSE),
-(3024, 'M4', 203, FALSE),
-(3025, 'M5', 203, FALSE),
-(3026, 'M6', 203, FALSE),
-(3027, 'M7', 203, FALSE),
-(3028, 'M8', 203, FALSE),
-(3029, 'M9', 203, FALSE),
-(3030, 'M10', 203, FALSE);
+    -- Théâtre Fairmount Balcony Seats (10 Seats)
+    (3011, 'B1', 201, TRUE),
+    (3012, 'B2', 201, TRUE),
+    (3013, 'B3', 201, TRUE),
+    (3014, 'B4', 201, FALSE),
+    (3015, 'B5', 201, FALSE),
+    (3016, 'B6', 201, FALSE),
+    (3017, 'B7', 201, FALSE),
+    (3018, 'B8', 201, FALSE),
+    (3019, 'B9', 201, FALSE),
+    (3020, 'B10', 201, FALSE),
 
--- (Note: You can continue cloning similar patterns for sections 204–214 if desired.
--- These 30 seats already exceed the 10 required venues and allow all queries to run.)
+    -- MTELUS Balcony Seats (10 Seats)
+    (3001, 'B1', 201, TRUE),
+    (3002, 'B2', 201, TRUE),
+    (3003, 'B3', 201, TRUE),
+    (3004, 'B4', 201, FALSE),
+    (3005, 'B5', 201, FALSE),
+    (3006, 'B6', 201, FALSE),
+    (3007, 'B7', 201, FALSE),
+    (3008, 'B8', 201, FALSE),
+    (3009, 'B9', 201, FALSE),
+    (3010, 'B10', 201, FALSE),
 
--- ================================
--- Concert (≥3 concerts, one with 0 tickets)
--- ================================
+    -- Scotia Arena Floor Seats (30 Seats)
+    (301, 'F1', 201, TRUE),
+    (302, 'F2', 201, TRUE),
+    (303, 'F3', 201, TRUE),
+    (304, 'F4', 201, FALSE),
+    (305, 'F5', 201, FALSE),
+    (306, 'F6', 201, FALSE),
+    (307, 'F7', 201, FALSE),
+    (308, 'F8', 201, FALSE),
+    (309, 'F9', 201, FALSE),
+    (310, 'F10', 201, FALSE),
+
+    (311, 'F11', 201, TRUE),
+    (312, 'F12', 201, TRUE),
+    (313, 'F13', 201, TRUE),
+    (314, 'F14', 201, FALSE),
+    (315, 'F15', 201, FALSE),
+    (316, 'F16', 201, FALSE),
+    (317, 'F17', 201, FALSE),
+    (318, 'F18', 201, FALSE),
+    (319, 'F19', 201, FALSE),
+    (320, 'F20', 201, FALSE),
+
+    (321, 'F21', 201, TRUE),
+    (322, 'F22', 201, TRUE),
+    (323, 'F23', 201, TRUE),
+    (324, 'F24', 201, FALSE),
+    (325, 'F25', 201, FALSE),
+    (326, 'F26', 201, FALSE),
+    (327, 'F27', 201, FALSE),
+    (328, 'F28', 201, FALSE),
+    (329, 'F29', 201, FALSE),
+    (330, 'F30', 201, FALSE),
+
+    -- Scotia Arena Balcony Seats (20 Seats)
+    (331, 'B1', 201, TRUE),
+    (332, 'B2', 201, TRUE),
+    (333, 'B3', 201, TRUE),
+    (334, 'B4', 201, FALSE),
+    (335, 'B5', 201, FALSE),
+    (336, 'B6', 201, FALSE),
+    (337, 'B7', 201, FALSE),
+    (338, 'B8', 201, FALSE),
+    (339, 'B9', 201, FALSE),
+    (340, 'B10', 201, FALSE),
+
+    (341, 'B11', 201, TRUE),
+    (342, 'B12', 201, TRUE),
+    (343, 'B13', 201, TRUE),
+    (344, 'B14', 201, FALSE),
+    (345, 'B15', 201, FALSE),
+    (346, 'B16', 201, FALSE),
+    (347, 'B17', 201, FALSE),
+    (348, 'B18', 201, FALSE),
+    (349, 'B19', 201, FALSE),
+    (350, 'B20', 201, FALSE),
+
+    -- Scotia Arena Top Box Seats (10 Seats)
+    (351, 'T1', 201, TRUE),
+    (352, 'T2', 201, TRUE),
+    (353, 'T3', 201, TRUE),
+    (354, 'T4', 201, FALSE),
+    (355, 'T5', 201, FALSE),
+    (356, 'T6', 201, FALSE),
+    (357, 'T7', 201, FALSE),
+    (358, 'T8', 201, FALSE),
+    (359, 'T9', 201, FALSE),
+    (360, 'T10', 201, FALSE),
+
+    -- Adelaide Hall Main Section Seats (15 Seats)
+    (361, 'M1', 201, TRUE),
+    (362, 'M2', 201, TRUE),
+    (363, 'M3', 201, TRUE),
+    (364, 'M4', 201, FALSE),
+    (365, 'M5', 201, FALSE),
+    (366, 'M6', 201, FALSE),
+    (367, 'M7', 201, FALSE),
+    (368, 'M8', 201, FALSE),
+    (369, 'M9', 201, FALSE),
+    (370, 'M10', 201, FALSE),
+    (371, 'M11', 201, TRUE),
+    (372, 'M12', 201, TRUE),
+    (373, 'M13', 201, TRUE),
+    (374, 'M14', 201, FALSE),
+    (375, 'M15', 201, FALSE),
+
+    -- Place des Arts
+    (381, 'B1', 201, TRUE),
+    (382, 'B2', 201, TRUE),
+    (383, 'B3', 201, TRUE),
+    (384, 'B4', 201, FALSE),
+    (385, 'B5', 201, FALSE),
+    (386, 'B6', 201, FALSE),
+    (387, 'B7', 201, FALSE),
+    (388, 'B8', 201, FALSE),
+    (389, 'B9', 201, FALSE),
+    (390, 'B10', 201, FALSE);
+
+-- Concert 
 INSERT INTO Concert VALUES
-(401, 'Rock Night', 101, '2026-04-01 19:00:00'),
-(402, 'Jazz Evening', 102, '2026-04-05 20:00:00'),
-(403, 'Classical Gala', 103, '2026-04-10 18:30:00'),
-(404, 'Indie Fest', 104, '2026-05-02 19:30:00'); -- Will have 0 tickets sold
+    --Taylor at Scotia  
+    (401, 'Taylor Swift Eras Tour', 101, '2026-02-01 19:00:00'), 
 
--- ================================
--- ConcertSectionPrice
--- ================================
+    -- Ed Sheeran at Adelaide Hall
+    (402, 'Ed Sheeran Divide', 102, '2026-02-16 17:00:00'), 
+
+    -- Harry Styles at Place des Arts
+    (403, 'Harry Styles Together Together', 103, '2026-03-01 20:00:00'), 
+
+    -- Connor Price at Scotia 
+    (404, 'Connor Price Tour', 101, '2026-03-20 18:00:00');
+
+-- ConcerSectionPrice 
 INSERT INTO ConcertSectionPrice VALUES
-(401, 201, 120.00),
-(401, 202, 80.00),
 
-(402, 203, 90.00),
-(402, 204, 60.00),
+    -- Taylor Swift Scotia Tickets 
+    (401, 201, 90.00), -- Floor
+    (401, 202, 120.00), -- Balcony 
+    (401, 203, 300.00), -- Top Box 
 
-(403, 205, 100.00);
+    -- Ed Sheeran Adelaide Hall Tickets
+    (402, 204, 150.00), -- Main
 
--- ================================
--- Tickets
--- Query requirement:
--- • One concert with 50+ tickets sold   → Concert 401
--- • One concert with 0 tickets sold     → Concert 404
--- • One with between 1 and 49 tickets   → Concert 402 (~20 tickets)
--- • Person with ≥25 tickets purchased
--- ================================
+    -- Harry Styles Place des Arts Tickets 
+    (403, 205, 110.00); -- Balcony 
 
--- Rock Night (401) — 55 tickets
+-- Ticket 
 INSERT INTO Ticket VALUES
-(5001, 'alex', 3001, 401, '2026-03-01 10:00:00'),
-(5002, 'alex', 3002, 401, '2026-03-01 10:01:00'),
-(5003, 'alex', 3003, 401, '2026-03-01 10:02:00'),
-(5004, 'alex', 3004, 401, '2026-03-01 10:03:00'),
-(5005, 'alex', 3005, 401, '2026-03-01 10:04:00'),
--- 20 more for alex
-(5006, 'alex', 3006, 401, '2026-03-01 10:05:00'),
-(5007, 'alex', 3007, 401, '2026-03-01 10:06:00'),
-(5008, 'alex', 3008, 401, '2026-03-01 10:07:00'),
-(5009, 'alex', 3009, 401, '2026-03-01 10:08:00'),
-(5010, 'alex', 3010, 401, '2026-03-01 10:09:00'),
-(5011, 'alex', 3011, 401, '2026-03-01 10:10:00'),
-(5012, 'alex', 3012, 401, '2026-03-01 10:11:00'),
-(5013, 'alex', 3013, 401, '2026-03-01 10:12:00'),
-(5014, 'alex', 3014, 401, '2026-03-01 10:13:00'),
-(5015, 'alex', 3015, 401, '2026-03-01 10:14:00'),
-(5016, 'alex', 3016, 401, '2026-03-01 10:15:00'),
-(5017, 'alex', 3017, 401, '2026-03-01 10:16:00'),
-(5018, 'alex', 3018, 401, '2026-03-01 10:17:00'),
-(5019, 'alex', 3019, 401, '2026-03-01 10:18:00'),
-(5020, 'alex', 3020, 401, '2026-03-01 10:19:00'),
-(5021, 'alex', 3021, 401, '2026-03-01 10:20:00'),
-(5022, 'alex', 3022, 401, '2026-03-01 10:21:00'),
-(5023, 'alex', 3023, 401, '2026-03-01 10:22:00'),
 
--- Add other buyers so it's not only alex
-(5024, 'jamie', 3024, 401, '2026-03-01 10:23:00'),
-(5025, 'sam',   3025, 401, '2026-03-01 10:24:00'),
-(5026, 'sam',   3026, 401, '2026-03-01 10:25:00'),
-(5027, 'lisa',  3027, 401, '2026-03-01 10:26:00'),
-(5028, 'lisa',  3028, 401, '2026-03-01 10:27:00'),
-(5029, 'lisa',  3029, 401, '2026-03-01 10:28:00'),
-(5030, 'lisa',  3030, 401, '2026-03-01 10:29:00'),
-(5031, 'alex',  3011, 401, '2026-03-01 10:30:00'),
-(5032, 'alex',  3012, 401, '2026-03-01 10:31:00'),
-(5033, 'alex',  3013, 401, '2026-03-01 10:32:00'),
-(5034, 'alex',  3014, 401, '2026-03-01 10:33:00');
-
--- Jazz Evening (402) — 20 tickets (between 0 and 50)
-INSERT INTO Ticket VALUES
-(5101, 'sam', 3021, 402, '2026-03-05 12:00:00'),
-(5102, 'sam', 3022, 402, '2026-03-05 12:01:00'),
-(5103, 'sam', 3023, 402, '2026-03-05 12:02:00'),
-(5104, 'sam', 3024, 402, '2026-03-05 12:03:00'),
-(5105, 'jamie', 3025, 402, '2026-03-05 12:04:00'),
-(5106, 'jamie', 3026, 402, '2026-03-05 12:05:00'),
-(5107, 'jamie', 3027, 402, '2026-03-05 12:06:00'),
-(5108, 'jamie', 3028, 402, '2026-03-05 12:07:00'),
-(5109, 'lisa', 3029, 402, '2026-03-05 12:08:00'),
-(5110, 'lisa', 3030, 402, '2026-03-05 12:09:00'),
-(5111, 'alex', 3001, 402, '2026-03-05 12:10:00'),
-(5112, 'alex', 3002, 402, '2026-03-05 12:11:00'),
-(5113, 'alex', 3003, 402, '2026-03-05 12:12:00'),
-(5114, 'alex', 3004, 402, '2026-03-05 12:13:00'),
-(5115, 'alex', 3005, 402, '2026-03-05 12:14:00'),
-(5116, 'alex', 3006, 402, '2026-03-05 12:15:00'),
-(5117, 'alex', 3007, 402, '2026-03-05 12:16:00'),
-(5118, 'alex', 3008, 402, '2026-03-05 12:17:00'),
-(5119, 'alex', 3009, 402, '2026-03-05 12:18:00'),
-(5120, 'alex', 3010, 402, '2026-03-05 12:19:00');
-
--- Classical Gala (403) — small ticket count (optional)
-INSERT INTO Ticket VALUES
-(5201, 'lisa', 3001, 403, '2026-03-10 09:00:00'),
-(5202, 'sam', 3002, 403, '2026-03-10 09:01:00');
-
--- Indie Fest (404) — 0 tickets (required)
+    -- Taylor Swift Tickets - 51 Sold 
+    (5001, 'alex', 3001, 401, '2026-03-01 10:00:00');
