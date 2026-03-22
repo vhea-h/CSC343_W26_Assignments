@@ -26,76 +26,127 @@ INSERT INTO Venue VALUES
 -- Section
 INSERT INTO Section VALUES
 
-    -- Scotia Arena Sections 
+    -- 101 Scotia Arena Sections 
     (201, 'Floor', 101),
     (202, 'Balcony', 101),
     (203, 'Top Box', 101),
 
-    -- Adelaide Hall
+    -- 102 Adelaide Hall
     (204, 'Main', 102),
 
-    -- Place des Arts
-    (205, 'Balcony', 102),
+    -- 103 Massey Hall 
+    (212, 'Main', 103),
 
-    -- MTELUS
-    (206, 'Balcony', 102),
+    -- 104 Place des Arts
+    (205, 'Balcony', 104),
 
-    -- Théâtre Fairmount
-    (207, 'Balcony', 102),
+    -- 105 MTELUS
+    (206, 'Balcony', 105),
 
-    -- Bronson Centre
-    (208, 'Balcony', 102),
+    -- 106 Théâtre Fairmount
+    (207, 'Balcony', 106),
 
-    -- Maxwell’s Concerts and Events
-    (209, 'Balcony', 102),
+    -- 107 Bronson Centre
+    (208, 'Balcony', 107),
 
-    -- Rogers Arena
-    (210, 'Balcony', 102),
+    -- 108 Maxwell’s Concerts and Events
+    (209, 'Balcony', 108),
 
-    -- Orpheum
-    (211, 'Balcony', 102);
+    -- 109 Rogers Arena
+    (210, 'Balcony', 109),
+
+    -- 110 Orpheum
+    (211, 'Balcony', 110);
 
 -- Seat
 
 INSERT INTO Seat VALUES
 
-    -- MTELUS Balcony Seats (10 Seats)
-    (3001, 'B1', 206, TRUE),
-    (3002, 'B2', 206, TRUE),
-    (3003, 'B3', 206, TRUE),
-    (3004, 'B4', 206, TRUE),
-    (3005, 'B5', 206, TRUE),
-    (3006, 'B6', 206, TRUE),
-    (3007, 'B7', 206, TRUE),
-    (3008, 'B8', 206, TRUE),
-    (3009, 'B9', 206, TRUE),
-    (3010, 'B10', 206, TRUE),
+    -- 103 Massey Hall Balcony Seats (10 Seats)
+    (3001, 'B1', 212, TRUE),
+    (3002, 'B2', 212, TRUE),
+    (3003, 'B3', 212, TRUE),
+    (3004, 'B4', 212, TRUE),
+    (3005, 'B5', 212, TRUE),
+    (3006, 'B6', 212, TRUE),
+    (3007, 'B7', 212, TRUE),
+    (3008, 'B8', 212, TRUE),
+    (3009, 'B9', 212, TRUE),
+    (3010, 'B10', 212, FALSE),
 
-    -- Théâtre Fairmount Balcony Seats (10 Seats)
-    (3011, 'B1', 201, TRUE),
-    (3012, 'B2', 201, TRUE),
-    (3013, 'B3', 201, TRUE),
-    (3014, 'B4', 201, FALSE),
-    (3015, 'B5', 201, FALSE),
-    (3016, 'B6', 201, FALSE),
-    (3017, 'B7', 201, FALSE),
-    (3018, 'B8', 201, FALSE),
-    (3019, 'B9', 201, FALSE),
-    (3020, 'B10', 201, FALSE),
+    -- 105 MTELUS Balcony Seats (10 Seats)
+    (3011, 'B1', 206, TRUE),
+    (3012, 'B2', 206, TRUE),
+    (3013, 'B3', 206, TRUE),
+    (3014, 'B4', 206, TRUE),
+    (3015, 'B5', 206, TRUE),
+    (3016, 'B6', 206, TRUE),
+    (3017, 'B7', 206, TRUE),
+    (3018, 'B8', 206, TRUE),
+    (3019, 'B9', 206, TRUE),
+    (3020, 'B10', 206, TRUE),
 
-    -- MTELUS Balcony Seats (10 Seats)
-    (3001, 'B1', 201, TRUE),
-    (3002, 'B2', 201, TRUE),
-    (3003, 'B3', 201, TRUE),
-    (3004, 'B4', 201, FALSE),
-    (3005, 'B5', 201, FALSE),
-    (3006, 'B6', 201, FALSE),
-    (3007, 'B7', 201, FALSE),
-    (3008, 'B8', 201, FALSE),
-    (3009, 'B9', 201, FALSE),
-    (3010, 'B10', 201, FALSE),
+    -- 106 Théâtre Fairmount Balcony Seats (10 Seats)
+    (3021, 'B1', 207, TRUE),
+    (3022, 'B2', 207, TRUE),
+    (3023, 'B3', 207, TRUE),
+    (3024, 'B4', 207, TRUE),
+    (3025, 'B5', 207, TRUE),
+    (3026, 'B6', 207, FALSE),
+    (3027, 'B7', 207, FALSE),
+    (3028, 'B8', 207, FALSE),
+    (3029, 'B9', 207, FALSE),
+    (3030, 'B10', 207, FALSE),
 
-    -- Scotia Arena Floor Seats (30 Seats)
+    -- 107 Bronson Centre Balcony Seats (10 Seats)
+    (3031, 'B1', 208, FALSE),
+    (3032, 'B2', 208, FALSE),
+    (3033, 'B3', 208, FALSE),
+    (3034, 'B4', 208, FALSE),
+    (3035, 'B5', 208, FALSE),
+    (3036, 'B6', 208, FALSE),
+    (3037, 'B7', 208, FALSE),
+    (3038, 'B8', 208, FALSE),
+    (3039, 'B9', 208, FALSE),
+    (3040, 'B10', 208, FALSE),
+
+    -- 108 Maxwell’s Concerts and Events Balcony Seats (10 Seats)
+    (3041, 'B1', 209, TRUE),
+    (3042, 'B2', 209, TRUE),
+    (3043, 'B3', 209, FALSE),
+    (3044, 'B4', 209, FALSE),
+    (3045, 'B5', 209, FALSE),
+    (3046, 'B6', 209, FALSE),
+    (3047, 'B7', 209, FALSE),
+    (3048, 'B8', 209, FALSE),
+    (3049, 'B9', 209, FALSE),
+    (3050, 'B10', 209, FALSE),
+
+    -- 109 Rogers Arena Balcony Seats (10 Seats)
+    (3051, 'B1', 210, TRUE),
+    (3052, 'B2', 210, FALSE),
+    (3053, 'B3', 210, FALSE),
+    (3054, 'B4', 210, FALSE),
+    (3055, 'B5', 210, FALSE),
+    (3056, 'B6', 210, FALSE),
+    (3057, 'B7', 210, FALSE),
+    (3058, 'B8', 210, FALSE),
+    (3059, 'B9', 210, FALSE),
+    (3060, 'B10', 210, FALSE),
+
+    -- 110 Orpheum Balcony Seats (10 Seats)
+    (3061, 'B1', 211, FALSE),
+    (3062, 'B2', 211, TRUE),
+    (3063, 'B3', 211, TRUE),
+    (3064, 'B4', 211, TRUE),
+    (3065, 'B5', 211, TRUE),
+    (3066, 'B6', 211, TRUE),
+    (3067, 'B7', 211, TRUE),
+    (3068, 'B8', 211, TRUE),
+    (3069, 'B9', 211, TRUE),
+    (3070, 'B10', 211, FALSE),
+
+    -- 101 Scotia Arena Floor Seats (30 Seats)
     (301, 'F1', 201, TRUE),
     (302, 'F2', 201, TRUE),
     (303, 'F3', 201, TRUE),
@@ -129,69 +180,69 @@ INSERT INTO Seat VALUES
     (329, 'F29', 201, FALSE),
     (330, 'F30', 201, FALSE),
 
-    -- Scotia Arena Balcony Seats (20 Seats)
-    (331, 'B1', 201, TRUE),
-    (332, 'B2', 201, TRUE),
-    (333, 'B3', 201, TRUE),
-    (334, 'B4', 201, FALSE),
-    (335, 'B5', 201, FALSE),
-    (336, 'B6', 201, FALSE),
-    (337, 'B7', 201, FALSE),
-    (338, 'B8', 201, FALSE),
-    (339, 'B9', 201, FALSE),
-    (340, 'B10', 201, FALSE),
+    -- 101 Scotia Arena Balcony Seats (20 Seats)
+    (331, 'B1', 202, TRUE),
+    (332, 'B2', 202, TRUE),
+    (333, 'B3', 202, TRUE),
+    (334, 'B4', 202, FALSE),
+    (335, 'B5', 202, FALSE),
+    (336, 'B6', 202, FALSE),
+    (337, 'B7', 202, FALSE),
+    (338, 'B8', 202, FALSE),
+    (339, 'B9', 202, FALSE),
+    (340, 'B10', 202, FALSE),
 
-    (341, 'B11', 201, TRUE),
-    (342, 'B12', 201, TRUE),
-    (343, 'B13', 201, TRUE),
-    (344, 'B14', 201, FALSE),
-    (345, 'B15', 201, FALSE),
-    (346, 'B16', 201, FALSE),
-    (347, 'B17', 201, FALSE),
-    (348, 'B18', 201, FALSE),
-    (349, 'B19', 201, FALSE),
-    (350, 'B20', 201, FALSE),
+    (341, 'B11', 202, TRUE),
+    (342, 'B12', 202, TRUE),
+    (343, 'B13', 202, TRUE),
+    (344, 'B14', 202, FALSE),
+    (345, 'B15', 202, FALSE),
+    (346, 'B16', 202, FALSE),
+    (347, 'B17', 202, FALSE),
+    (348, 'B18', 202, FALSE),
+    (349, 'B19', 202, FALSE),
+    (350, 'B20', 202, FALSE),
 
-    -- Scotia Arena Top Box Seats (10 Seats)
-    (351, 'T1', 201, TRUE),
-    (352, 'T2', 201, TRUE),
-    (353, 'T3', 201, TRUE),
-    (354, 'T4', 201, FALSE),
-    (355, 'T5', 201, FALSE),
-    (356, 'T6', 201, FALSE),
-    (357, 'T7', 201, FALSE),
-    (358, 'T8', 201, FALSE),
-    (359, 'T9', 201, FALSE),
-    (360, 'T10', 201, FALSE),
+    -- 101 Scotia Arena Top Box Seats (10 Seats)
+    (351, 'T1', 203, TRUE),
+    (352, 'T2', 203, TRUE),
+    (353, 'T3', 203, TRUE),
+    (354, 'T4', 203, FALSE),
+    (355, 'T5', 203, FALSE),
+    (356, 'T6', 203, FALSE),
+    (357, 'T7', 203, FALSE),
+    (358, 'T8', 203, FALSE),
+    (359, 'T9', 203, FALSE),
+    (360, 'T10', 203, FALSE),
 
-    -- Adelaide Hall Main Section Seats (15 Seats)
-    (361, 'M1', 201, TRUE),
-    (362, 'M2', 201, TRUE),
-    (363, 'M3', 201, TRUE),
-    (364, 'M4', 201, FALSE),
-    (365, 'M5', 201, FALSE),
-    (366, 'M6', 201, FALSE),
-    (367, 'M7', 201, FALSE),
-    (368, 'M8', 201, FALSE),
-    (369, 'M9', 201, FALSE),
-    (370, 'M10', 201, FALSE),
-    (371, 'M11', 201, TRUE),
-    (372, 'M12', 201, TRUE),
-    (373, 'M13', 201, TRUE),
-    (374, 'M14', 201, FALSE),
-    (375, 'M15', 201, FALSE),
+    -- 102 Adelaide Hall Main Section Seats (15 Seats)
+    (361, 'M1', 204, TRUE),
+    (362, 'M2', 204, TRUE),
+    (363, 'M3', 204, TRUE),
+    (364, 'M4', 204, FALSE),
+    (365, 'M5', 204, FALSE),
+    (366, 'M6', 204, FALSE),
+    (367, 'M7', 204, FALSE),
+    (368, 'M8', 204, FALSE),
+    (369, 'M9', 204, FALSE),
+    (370, 'M10', 204, FALSE),
+    (371, 'M11', 204, TRUE),
+    (372, 'M12', 204, TRUE),
+    (373, 'M13', 204, TRUE),
+    (374, 'M14', 204, FALSE),
+    (375, 'M15', 204, FALSE),
 
-    -- Place des Arts
-    (381, 'B1', 201, TRUE),
-    (382, 'B2', 201, TRUE),
-    (383, 'B3', 201, TRUE),
-    (384, 'B4', 201, FALSE),
-    (385, 'B5', 201, FALSE),
-    (386, 'B6', 201, FALSE),
-    (387, 'B7', 201, FALSE),
-    (388, 'B8', 201, FALSE),
-    (389, 'B9', 201, FALSE),
-    (390, 'B10', 201, FALSE);
+    -- 104 Place des Arts
+    (381, 'B1', 205, TRUE),
+    (382, 'B2', 205, TRUE),
+    (383, 'B3', 205, TRUE),
+    (384, 'B4', 205, FALSE),
+    (385, 'B5', 205, FALSE),
+    (386, 'B6', 205, FALSE),
+    (387, 'B7', 205, FALSE),
+    (388, 'B8', 205, FALSE),
+    (389, 'B9', 205, FALSE),
+    (390, 'B10', 205, FALSE);
 
 -- Concert 
 INSERT INTO Concert VALUES
