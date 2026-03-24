@@ -30,4 +30,6 @@ CREATE VIEW MostTicketsPurchased AS
         FROM  MaxTicketsPurchased)
         ORDER BY username;
 
+SELECT * FROM MostTicketsPurchased;
+
     
