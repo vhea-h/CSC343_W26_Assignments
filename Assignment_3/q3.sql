@@ -37,5 +37,5 @@ CREATE VIEW PercentAccessibleSeats AS
         ON TotalSeats.venueID = TotalAccessibleSeats.venueID
     ORDER BY TotalSeats.total_seats DESC, TotalSeats.venueID;
 
-
+SELECT * FROM PercentAccessibleSeats;
     
