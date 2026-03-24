@@ -1,1 +1,132 @@
+ \i runner.txt
+-------------------- Loading schema and data: --------------------
 
+psql:schema.ddl:40: NOTICE:  drop cascades to 17 other objects
+DETAIL:  drop cascades to table owner
+drop cascades to table venue
+drop cascades to table section
+drop cascades to table seat
+drop cascades to table concert
+drop cascades to table concertsectionprice
+drop cascades to table ticket
+drop cascades to view allconcerttickets
+drop cascades to view numtickets
+drop cascades to view totalsales
+drop cascades to view ownedvenuecount
+drop cascades to view totalseats
+drop cascades to view totalaccessibleseats
+drop cascades to view percentaccessibleseats
+drop cascades to view totalticketspurchased
+drop cascades to view maxticketspurchased
+drop cascades to view mostticketspurchased
+DROP SCHEMA
+CREATE SCHEMA
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 6
+INSERT 0 10
+INSERT 0 12
+INSERT 0 155
+INSERT 0 4
+INSERT 0 5
+INSERT 0 61
+
+-------------------- Query 1: -----------------------------------
+
+SET
+psql:q1.sql:6: NOTICE:  view "allconcerttickets" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+psql:q1.sql:15: NOTICE:  view "numtickets" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+psql:q1.sql:24: NOTICE:  view "totalsales" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+psql:q1.sql:37: NOTICE:  view "totalseats" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+psql:q1.sql:51: NOTICE:  view "percentvenuesold" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+psql:q1.sql:61: NOTICE:  view "ticketsaledetails" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+ concertid | num_tickets_sold | net_sales | percent_venue_sold
+-----------+------------------+-----------+--------------------
+       401 |               51 |      7020 |                 85
+       402 |               10 |      1500 |  66.66666666666666
+       403 |                0 |         0 |                  0
+       404 |                0 |         0 |                  0
+(4 rows)
+
+
+-------------------- Query 2: -----------------------------------
+
+SET
+psql:q2.sql:5: NOTICE:  view "ownedvenuecount" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+ ownerid | num_venues_owned
+---------+------------------
+       2 |                3
+       3 |                2
+       4 |                2
+       6 |                2
+       1 |                1
+       5 |                0
+(6 rows)
+
+
+-------------------- Query 3: -----------------------------------
+
+SET
+psql:q3.sql:5: NOTICE:  drop cascades to 2 other objects
+DETAIL:  drop cascades to view percentvenuesold
+drop cascades to view ticketsaledetails
+DROP VIEW
+CREATE VIEW
+psql:q3.sql:17: NOTICE:  view "totalaccessibleseats" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+psql:q3.sql:30: NOTICE:  view "percentaccessibleseats" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+ venueid | total_seats | percent_accessible_seats
+---------+-------------+--------------------------
+     101 |          60 |                       30
+     102 |          15 |                       40
+     103 |          10 |                       90
+     104 |          10 |                       30
+     105 |          10 |                      100
+     106 |          10 |                       50
+     107 |          10 |                        0
+     108 |          10 |                       20
+     109 |          10 |                       10
+     110 |          10 |                       80
+(10 rows)
+
+
+-------------------- Query 4: -----------------------------------
+
+SET
+psql:q4.sql:5: NOTICE:  view "totalticketspurchased" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+psql:q4.sql:15: NOTICE:  view "maxticketspurchased" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+psql:q4.sql:24: NOTICE:  view "mostticketspurchased" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+ username | num_tickets_purchased
+----------+-----------------------
+ joe      |                    26
+ marcus   |                    26
+(2 rows)
