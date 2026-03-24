@@ -67,4 +67,4 @@ CREATE VIEW TicketSaleDetails AS
         NATURAL JOIN PercentVenueSold
     ORDER BY num_tickets_sold DESC;
 
-
+SELECT * FROM TicketSaleDetails;
