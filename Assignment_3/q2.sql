@@ -9,3 +9,5 @@ CREATE VIEW OwnedVenueCount AS
         ON Owner.ownerID = Venue.ownerID
     GROUP BY Owner.ownerID
     ORDER BY count(Venue.venueID) DESC, Owner.ownerID;
+
+SELECT * FROM OwnedVenueCount;
